@@ -1,0 +1,30 @@
+README.md
+  94ef0c809934aecd 1-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.1",
+  "base_commit_sha": "9188a6dd211ccf9f84cc69295f94804e5735eeed",
+  "prompts": {
+    "94ef0c809934aecd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42c3b5a1-5eb1-44f0-92f9-382a68792cbe",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "liaolei2",
+      "messages": [],
+      "total_additions": 76,
+      "total_deletions": 0,
+      "accepted_lines": 76,
+      "overriden_lines": 0,
+      "messages_url": "http://172.20.103.50:8002/cas/9a04c472102843146d2d34d3401b6d5ac233757ba34066481a54b31ae77c9462",
+      "token_usage": {
+        "input_tokens": 129056,
+        "output_tokens": 1227893,
+        "cache_creation_input_tokens": 8798787,
+        "cache_read_input_tokens": 595663413
+      }
+    }
+  }
+}
