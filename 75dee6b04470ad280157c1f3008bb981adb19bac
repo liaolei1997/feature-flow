@@ -1,0 +1,114 @@
+feature-flow/studio/web/src/App.tsx
+  94ef0c809934aecd 1-1300
+feature-flow/studio/web/vite.config.ts
+  94ef0c809934aecd 1-14
+.claude-plugin/marketplace.json
+  94ef0c809934aecd 1-21
+feature-flow/references/verifier-contracts.md
+  94ef0c809934aecd 1-130
+feature-flow/studio/server/src/workflowRunner.ts
+  94ef0c809934aecd 1-408
+feature-flow/studio/.gitignore
+  94ef0c809934aecd 1-4
+feature-flow/studio/server/src/askBridge.ts
+  94ef0c809934aecd 1-93
+feature-flow/studio/server/src/agentsParser.ts
+  94ef0c809934aecd 1-80
+feature-flow/agents/code-architect.md
+  94ef0c809934aecd 1-34
+feature-flow/references/prd-check-lenses.md
+  94ef0c809934aecd 1-174
+feature-flow/commands/feature-flow.legacy.md
+  94ef0c809934aecd 1-342
+feature-flow/docs/superpowers/plans/2026-05-18-feature-flow-v2.md
+  94ef0c809934aecd 1-1768
+feature-flow/references/project-map-template.md
+  94ef0c809934aecd 1-122
+feature-flow/commands/sessions.md
+  94ef0c809934aecd 1-62
+feature-flow/studio/web/src/styles.css
+  94ef0c809934aecd 1-575
+feature-flow/docs/superpowers/specs/2026-06-05-feature-flow-studio-design.md
+  94ef0c809934aecd 1-119
+feature-flow/commands/feature-flow.md
+  94ef0c809934aecd 1-1133
+feature-flow/studio/package.json
+  94ef0c809934aecd 1-11
+feature-flow/studio/server/package.json
+  94ef0c809934aecd 1-26
+feature-flow/studio/web/index.html
+  94ef0c809934aecd 1-18
+feature-flow/studio/server/src/promptAssembler.ts
+  94ef0c809934aecd 1-15
+feature-flow/studio/server/src/prdIntake.ts
+  94ef0c809934aecd 1-84
+.gitignore
+  94ef0c809934aecd 1-14
+feature-flow/studio/color-schemes.html
+  94ef0c809934aecd 1-187
+feature-flow/studio/web/package.json
+  94ef0c809934aecd 1-24
+feature-flow/.claude-plugin/plugin.json
+  94ef0c809934aecd 1-8
+feature-flow/studio/server/test/pure.test.ts
+  94ef0c809934aecd 1-69
+feature-flow/studio/README.md
+  94ef0c809934aecd 1-41
+feature-flow/studio/web/tsconfig.json
+  94ef0c809934aecd 1-16
+feature-flow/studio/web/src/types.ts
+  94ef0c809934aecd 1-43
+feature-flow/studio/server/src/config.ts
+  94ef0c809934aecd 1-21
+feature-flow/studio/scripts/dev.mjs
+  94ef0c809934aecd 1-27
+feature-flow/studio/web/src/main.tsx
+  94ef0c809934aecd 1-6
+feature-flow/studio/server/src/server.ts
+  94ef0c809934aecd 1-499
+feature-flow/commands/studio.md
+  94ef0c809934aecd 1-56
+feature-flow/agents/code-reviewer.md
+  94ef0c809934aecd 1-46
+feature-flow/agents/prd-check-verifier.md
+  94ef0c809934aecd 1-72
+feature-flow/studio/server/src/sessionStore.ts
+  94ef0c809934aecd 1-286
+feature-flow/agents/code-explorer.md
+  94ef0c809934aecd 1-51
+feature-flow/studio/server/tsconfig.json
+  94ef0c809934aecd 1-15
+feature-flow/docs/superpowers/specs/2026-05-18-feature-flow-v2-design.md
+  94ef0c809934aecd 1-342
+feature-flow/studio/server/src/attach.ts
+  94ef0c809934aecd 1-67
+feature-flow/references/output-templates.md
+  94ef0c809934aecd 1-148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.1",
+  "base_commit_sha": "75dee6b04470ad280157c1f3008bb981adb19bac",
+  "prompts": {
+    "94ef0c809934aecd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42c3b5a1-5eb1-44f0-92f9-382a68792cbe",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "liaolei2",
+      "messages": [],
+      "total_additions": 8571,
+      "total_deletions": 0,
+      "accepted_lines": 8571,
+      "overriden_lines": 0,
+      "messages_url": "http://172.20.103.50:8002/cas/8af10afd1acde1f4dcfe9c8817149505dcf03febf3d8c984478c122d9d769434",
+      "token_usage": {
+        "input_tokens": 128627,
+        "output_tokens": 1212850,
+        "cache_creation_input_tokens": 8780864,
+        "cache_read_input_tokens": 577270906
+      }
+    }
+  }
+}
