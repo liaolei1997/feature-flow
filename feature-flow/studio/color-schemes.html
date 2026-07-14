@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>feature-flow studio · 配色候选</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #2a2a2e; font-family: "Hanken Grotesk","PingFang SC",system-ui,sans-serif; padding: 32px; }
+  .page-title { color: #fff; font-family: "Newsreader",serif; font-style: italic; font-size: 26px; margin: 0 0 4px; }
+  .page-sub { color: #aaa; font-size: 13px; margin: 0 0 28px; }
+
+  .scheme { margin-bottom: 40px; }
+  .scheme-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .scheme-name { color: #fff; font-weight: 700; font-size: 16px; }
+  .scheme-tag { color: #999; font-size: 12px; }
+  .swatches { display: flex; gap: 6px; margin-left: auto; }
+  .sw { width: 22px; height: 22px; border-radius: 5px; border: 1px solid rgba(255,255,255,.15); }
+
+  /* ── 通用 mock 结构，全部走 CSS 变量，由 .scheme-X 注入 ── */
+  .mock {
+    --ui: "Hanken Grotesk","PingFang SC",system-ui,sans-serif;
+    --serif: "Newsreader","Songti SC",Georgia,serif;
+    --mono: "JetBrains Mono",ui-monospace,monospace;
+    border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,.2);
+    box-shadow: 0 12px 40px rgba(0,0,0,.35); background: var(--bg);
+    display: grid; grid-template-rows: auto 1fr;
+  }
+  .m-top { display: flex; align-items: center; gap: 18px; padding: 0 18px; height: 50px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .m-brand { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 18px; color: var(--ink); }
+  .m-brand b { color: var(--accent); font-style: normal; }
+  .m-tag { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
+  .m-spacer { flex: 1; }
+  .m-pill { font-size: 11px; font-weight: 600; border: 1px solid var(--line2); border-radius: 8px; padding: 5px 11px; color: var(--dim); background: var(--surface); }
+  .m-pill.accent { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .m-status { display: flex; align-items: center; gap: 6px; }
+  .m-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+  .m-status span { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+  .m-body { display: grid; grid-template-columns: 200px 1fr; min-height: 300px; }
+  .m-side { background: var(--side); border-right: 1px solid var(--line); padding: 12px; }
+  .m-newbtn { width: 100%; text-align: center; background: var(--accent); color: var(--on-accent); border: none; border-radius: 9px; padding: 9px; font-weight: 700; font-size: 12px; box-shadow: 0 3px 10px var(--accent-glow); }
+  .m-sidehead { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); margin: 16px 4px 8px; }
+  .m-sess { padding: 9px 10px; border-radius: 9px; margin-bottom: 4px; }
+  .m-sess.on { background: var(--accent-soft); border: 1px solid var(--accent); }
+  .m-sess-id { font-size: 12px; font-weight: 600; color: var(--ink); }
+  .m-sess-id .live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); margin-right: 6px; vertical-align: middle; }
+  .m-badge { display: inline-block; font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 5px; margin-top: 6px; }
+  .m-badge.run { background: var(--warn-soft); color: var(--warn); }
+  .m-badge.done { background: var(--ok-soft); color: var(--ok); }
+
+  .m-main { padding: 18px 22px; overflow: hidden; }
+  .m-h { font-family: var(--ui); font-weight: 700; font-size: 15px; color: var(--ink); margin: 0 0 12px; }
+  .m-assistant { font-size: 13px; color: var(--ink); padding-left: 12px; border-left: 2px solid var(--line2); margin-bottom: 10px; line-height: 1.6; }
+  .m-assistant code { font-family: var(--mono); font-size: .85em; background: var(--chip); color: var(--chip-ink); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--line); }
+  .m-user { background: var(--accent); color: var(--on-accent); padding: 8px 13px; border-radius: 14px 14px 4px 14px; font-size: 12.5px; font-weight: 500; margin: 0 0 12px auto; max-width: 70%; width: fit-content; }
+
+  .m-ask { border: 1.5px solid var(--accent); border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: var(--surface); }
+  .m-ask-banner { font-family: var(--mono); font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--on-accent); background: var(--accent); padding: 6px 12px; }
+  .m-ask-body { padding: 11px; }
+  .m-ask-q { font-weight: 700; font-size: 12.5px; color: var(--ink); margin-bottom: 8px; }
+  .m-opt { border: 1px solid var(--line2); background: var(--side); border-radius: 9px; padding: 8px 11px; margin-bottom: 6px; }
+  .m-opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .m-opt-l { font-weight: 700; font-size: 12px; color: var(--ink); }
+  .m-opt.on .m-opt-l { color: var(--accent-ink); }
+  .m-opt-d { font-size: 11px; color: var(--dim); margin-top: 2px; }
+
+  table.m-tbl { border-collapse: collapse; font-family: var(--ui); font-size: 11.5px; margin-top: 4px; }
+  .m-tbl th, .m-tbl td { border: 1px solid var(--line); padding: 5px 10px; text-align: left; color: var(--ink); }
+  .m-tbl th { background: var(--chip); font-weight: 700; }
+  .m-tbl td:first-child { white-space: nowrap; color: var(--dim); }
+
+  /* ════════ A · Graphite Dusk（精致暗色）════════ */
+  .scheme-a .mock {
+    --bg:#121317; --surface:#1b1d23; --side:#171920; --ink:#e9e9ec; --dim:#9a9ca3; --faint:#62646d;
+    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+    --accent:#d9a441; --accent-ink:#e8b65a; --accent-soft:rgba(217,164,65,.14); --accent-glow:rgba(217,164,65,.3); --on-accent:#1a1408;
+    --ok:#7fb08a; --ok-soft:rgba(127,176,138,.18); --warn:#d9a441; --warn-soft:rgba(217,164,65,.14);
+    --chip:#24262e; --chip-ink:#e8b65a;
+  }
+  /* ════════ B · Paper & Oxblood（编辑室·近单色 + 酒红）════════ */
+  .scheme-b .mock {
+    --bg:#f4f1ea; --surface:#fffdf9; --side:#ece8df; --ink:#1c1a17; --dim:#5a554c; --faint:#9a9384;
+    --line:#e0dacd; --line2:#cfc7b6;
+    --accent:#7c2d3a; --accent-ink:#7c2d3a; --accent-soft:#f0e3e3; --accent-glow:rgba(124,45,58,.25); --on-accent:#fff;
+    --ok:#5f7d5a; --ok-soft:#e4ebde; --warn:#9a6a2f; --warn-soft:#f1e7d6;
+    --chip:#ebe6da; --chip-ink:#7c2d3a;
+  }
+  /* ════════ C · Slate & Jade（冷调专业）════════ */
+  .scheme-c .mock {
+    --bg:#f3f6f6; --surface:#ffffff; --side:#eaeff0; --ink:#1c2528; --dim:#586469; --faint:#9aa6a9;
+    --line:#dee7e8; --line2:#cbd7d8;
+    --accent:#16786a; --accent-ink:#0f5e53; --accent-soft:#dcefeb; --accent-glow:rgba(22,120,106,.25); --on-accent:#fff;
+    --ok:#16786a; --ok-soft:#dcefeb; --warn:#b6802c; --warn-soft:#f3e9d4;
+    --chip:#e8eeef; --chip-ink:#0f5e53;
+  }
+  /* ════════ D · Greige & Bronze（暖中性·低调奢华）════════ */
+  .scheme-d .mock {
+    --bg:#efece5; --surface:#faf8f3; --side:#e8e4da; --ink:#2a2620; --dim:#6c655a; --faint:#a59d8e;
+    --line:#ddd6c9; --line2:#cac1b0;
+    --accent:#8a6d33; --accent-ink:#6f5728; --accent-soft:#ece3cf; --accent-glow:rgba(138,109,51,.25); --on-accent:#fff;
+    --ok:#6f8061; --ok-soft:#e6ebdd; --warn:#9a7b3f; --warn-soft:#ece3cf;
+    --chip:#e7e1d3; --chip-ink:#6f5728;
+  }
+  /* ════════ E · Indigo Slate（冷蓝·可信科技感）════════ */
+  .scheme-e .mock {
+    --bg:#eef0f5; --surface:#ffffff; --side:#e6e9f1; --ink:#1b2233; --dim:#586079; --faint:#969db2;
+    --line:#dde1ec; --line2:#cbd2e2;
+    --accent:#3a4ea0; --accent-ink:#2d3e84; --accent-soft:#e1e5f4; --accent-glow:rgba(58,78,160,.25); --on-accent:#fff;
+    --ok:#3f8f7d; --ok-soft:#dcefe9; --warn:#9a6a2f; --warn-soft:#f1e7d6;
+    --chip:#e6e9f2; --chip-ink:#2d3e84;
+  }
+</style>
+</head>
+<body>
+  <h1 class="page-title">feature·flow studio — 配色候选</h1>
+  <p class="page-sub">同一界面切片 × 5 套配色。挑一套，或告诉我哪套的哪部分要调。</p>
+
+  <!-- 模板：用脚本注入 5 份，避免手抄 -->
+  <div id="root"></div>
+
+<script>
+const MOCK = (name, tag, sw) => `
+<div class="scheme ${name.cls}">
+  <div class="scheme-head">
+    <span class="scheme-name">${name.title}</span>
+    <span class="scheme-tag">${tag}</span>
+    <span class="swatches">${sw.map(c=>`<span class="sw" style="background:${c}"></span>`).join("")}</span>
+  </div>
+  <div class="mock">
+    <div class="m-top">
+      <span class="m-brand">feature<b>·</b>flow</span>
+      <span class="m-tag">studio</span>
+      <span class="m-spacer"></span>
+      <span class="m-pill accent">权限：受控</span>
+      <span class="m-pill">工作流说明</span>
+      <span class="m-status"><span class="m-dot"></span><span>running</span></span>
+    </div>
+    <div class="m-body">
+      <div class="m-side">
+        <button class="m-newbtn">+ 新建会话</button>
+        <div class="m-sidehead">Sessions</div>
+        <div class="m-sess on">
+          <div class="m-sess-id"><span class="live"></span>edit-review-model-switch</div>
+          <span class="m-badge run">running</span>
+        </div>
+        <div class="m-sess">
+          <div class="m-sess-id">rule-review-sentence-grain</div>
+          <span class="m-badge done">完成</span>
+        </div>
+      </div>
+      <div class="m-main">
+        <div class="m-h">进行中的会话</div>
+        <div class="m-assistant">已生成 <code>tech-design.md</code>：新增 3 个文件、修改 12 个。确认推进实现？</div>
+        <div class="m-user">approve，进入实现</div>
+        <div class="m-ask">
+          <div class="m-ask-banner">● 需要你的决策</div>
+          <div class="m-ask-body">
+            <div class="m-ask-q">批量审查结果，非发起人的同团队成员能否查看？</div>
+            <div class="m-opt on"><div class="m-opt-l">A) 仅发起人可见</div><div class="m-opt-d">最严格</div></div>
+            <div class="m-opt"><div class="m-opt-l">B) 同 workspace 可见</div><div class="m-opt-d">协作友好</div></div>
+          </div>
+        </div>
+        <table class="m-tbl">
+          <tr><th>维度</th><th>方案 A</th><th>方案 B</th></tr>
+          <tr><td>改动文件数</td><td>3 个</td><td>6 个</td></tr>
+          <tr><td>关键风险</td><td>覆盖不全</td><td>改动面广</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const schemes = [
+  [{cls:"scheme-a",title:"A · Graphite Dusk"},"精致暗色 · 石墨灰 + 暖金",["#121317","#1b1d23","#d9a441","#7fb08a"]],
+  [{cls:"scheme-b",title:"B · Paper & Oxblood"},"编辑室 · 暖纸近单色 + 酒红",["#f4f1ea","#fffdf9","#7c2d3a","#5f7d5a"]],
+  [{cls:"scheme-c",title:"C · Slate & Jade"},"冷调专业 · 石板灰 + 翡翠绿",["#f3f6f6","#ffffff","#16786a","#b6802c"]],
+  [{cls:"scheme-d",title:"D · Greige & Bronze"},"暖中性 · 低调奢华 + 古铜",["#efece5","#faf8f3","#8a6d33","#6f8061"]],
+  [{cls:"scheme-e",title:"E · Indigo Slate"},"冷蓝 · 可信科技感 + 靛蓝",["#eef0f5","#ffffff","#3a4ea0","#3f8f7d"]],
+];
+document.getElementById("root").innerHTML = schemes.map(s=>MOCK(s[0],s[1],s[2])).join("");
+</script>
+</body>
+</html>

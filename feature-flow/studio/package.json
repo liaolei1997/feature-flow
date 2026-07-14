@@ -1,0 +1,11 @@
+{
+  "name": "feature-flow-studio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../web && npm install",
+    "dev": "node scripts/dev.mjs",
+    "server": "cd server && npm start",
+    "web": "cd web && npm run dev"
+  }
+}

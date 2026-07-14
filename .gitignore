@@ -1,0 +1,14 @@
+# ── feature-flow 运行时数据（各人本地生成，含项目专属信息，绝不随插件分发）──
+feature-flow/data/
+feature-flow/studio/.uploads/
+feature-flow/studio/.studio-runtime.log
+
+# ── 依赖与构建产物（安装时本地生成）──
+**/node_modules/
+feature-flow/studio/web/dist/
+feature-flow/studio/server/dist/
+
+# ── 杂项 ──
+.DS_Store
+*.bak
+*.log
