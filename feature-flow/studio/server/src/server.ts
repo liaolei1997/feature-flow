@@ -155,9 +155,31 @@ function freeIdleOrBlock(): { ok: false; error: string } | null {
 }
 
 // ── HTTP ────────────────────────────────────────────────────
+// 可信来源 = 本机 web 工作台（端口 = server 端口 - 1，约定 4316/4317）。
+// 这是特权本地服务（agent 带 bypassPermissions），必须挡住浏览器里恶意页的跨站请求（CSRF / 跨站 WS 劫持）。
+const WEB_PORT = PORT - 1;
+const ALLOWED_ORIGINS = new Set([
+  `http://127.0.0.1:${WEB_PORT}`,
+  `http://localhost:${WEB_PORT}`,
+]);
+function originOk(origin: string | undefined): boolean {
+  // 无 Origin（同源导航 / curl 等非浏览器）放行；有 Origin 必须在白名单内
+  return !origin || ALLOWED_ORIGINS.has(origin);
+}
+
 const app = Fastify({ logger: false });
-await app.register(cors, { origin: true });
+await app.register(cors, { origin: [...ALLOWED_ORIGINS], credentials: false });
 await app.register(multipart, { limits: { fileSize: 20 * 1024 * 1024 } });
+
+// CSRF 硬拦：改写类请求若带了非白名单 Origin（恶意网页跨站发起），一律拒。
+// 注：仅 CORS 不够——text/plain 等"简单请求"不触发预检也会打到服务端，故服务端主动校验。
+app.addHook("onRequest", async (req, reply) => {
+  const m = req.method;
+  if (m === "GET" || m === "HEAD" || m === "OPTIONS") return;
+  if (!originOk(req.headers.origin)) {
+    reply.code(403).send({ ok: false, error: "跨站请求被拒绝（Origin 不在白名单）" });
+  }
+});
 
 app.get("/api/projects", async () => ({ projects: listProjects() }));
 
@@ -429,7 +451,8 @@ app.post("/api/stop", async () => {
 // ── WebSocket ───────────────────────────────────────────────
 const wss = new WebSocketServer({ noServer: true });
 app.server.on("upgrade", (request, socket, head) => {
-  if (request.url?.startsWith("/ws")) {
+  // 防跨站 WS 劫持：浏览器握手必带 Origin，非白名单来源一律拒（无 Origin 的非浏览器客户端放行）
+  if (request.url?.startsWith("/ws") && originOk(request.headers.origin)) {
     wss.handleUpgrade(request, socket, head, (ws) => wss.emit("connection", ws));
   } else {
     socket.destroy();
