@@ -58,7 +58,8 @@ export function App() {
   const mapRefreshingRef = useRef(false);                    // 同上，供被闭包捕获的 handleRunner 读最新值
   const projectIdRef = useRef<string | null>(null);          // 同步当前 projectId，供 handleRunner 读
   const [liveChat, setLiveChat] = useState<ChatItem[]>([]);
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] = useState(false); // 连接开着（含空闲等输入）
+  const [busy, setBusy] = useState(false);        // 正在生成本轮（区分"生成中"vs"在线空闲"）
   const [showDocs, setShowDocs] = useState(false);
   const [renaming, setRenaming] = useState<string | null>(null);
   const [allowAll, setAllowAll] = useState(false); // 权限模式：false=受控（默认），true=全部允许
@@ -153,6 +154,9 @@ export function App() {
       }
     });
     if (m.type === "error" || m.type === "done") setRunning(false);
+    // busy = 正在生成本轮：吐字/工具调用中为真；本轮完成/等作答/结束为假（镜像后端 generating）
+    if (m.type === "assistant_text" || m.type === "tool_use") setBusy(true);
+    if (m.type === "result" || m.type === "ask" || m.type === "permission" || m.type === "done" || m.type === "error") setBusy(false);
     // 地图刷新是一次性 run：本轮 result 一到就收尾——WorkflowSession 为多轮设计，
     // 一轮完只发 result 不发 done，会一直挂着等输入，所以这里主动停掉会话。
     // 用 ref 读：handleRunner 被 WS 的 []-effect 闭包捕获，直接读 state 会是旧值。
@@ -245,7 +249,7 @@ export function App() {
       alert(r.error ?? "刷新失败");
       return;
     }
-    setLiveChat([]); setLiveSession(null); setUsage(null); setRunning(true);
+    setLiveChat([]); setLiveSession(null); setUsage(null); setRunning(true); setBusy(true);
     setMapRefreshing(true); mapRefreshingRef.current = true;
     showLive(); // 切到 live 视图看 agent 扫码更新；完成后自动跳回「项目记忆」展示最新
   }
@@ -291,13 +295,16 @@ export function App() {
   }
 
   function sendAnswer(id: string, answers: Record<string, string[]>) {
+    setBusy(true);
     wsRef.current?.send(JSON.stringify({ type: "answer", id, answers }));
   }
   function sendPerm(id: string, decision: "allow" | "deny" | "always") {
+    setBusy(true);
     wsRef.current?.send(JSON.stringify({ type: "perm", id, decision }));
   }
   type ImgArg = { url: string; mediaType: string; data: string };
   function sendMessage(text: string, images?: ImgArg[]) {
+    setBusy(true);
     const urls = (images ?? []).map((i) => i.url);
     // 乐观渲染（含缩略图）；服务端只落盘标记、不回显，避免重复
     setLiveChat((c) => [...c, { kind: "user", text, images: urls.length ? urls : undefined }]);
@@ -324,7 +331,7 @@ export function App() {
     }).then((x) => x.json());
     if (!r.ok) { alert(r.error); return; }
     setLiveChat([...hist, { kind: "user", text, images: urls.length ? urls : undefined }]);
-    setRunning(true);
+    setRunning(true); setBusy(true);
     setLiveSession({ projectId, sessionId });
     setView({ mode: "conversation", sessionId: "__live__", live: true, items: [] });
   }
@@ -361,11 +368,12 @@ export function App() {
     setLiveChat([]);
     setLiveSession(null);
     setUsage(null);
-    setRunning(true);
+    setRunning(true); setBusy(true);
     showLive();
   }
 
   async function stopRun() {
+    setBusy(false);
     await fetch("/api/stop", { method: "POST" }).catch(() => {});
     setRunning(false);
     // 保留 liveSession：停止后输入框继续可用，走 resume 接着聊
@@ -390,6 +398,7 @@ export function App() {
           activeArtifact={view.mode === "artifact" ? view.name : null}
           running={running}
           liveSessionId={running && liveSession && liveSession.projectId === projectId ? liveSession.sessionId : null}
+          busy={busy}
           onNew={() => setView({ mode: "new" })}
           onLive={showLive}
           onMap={openMap}
@@ -583,6 +592,7 @@ function Sidebar(props: {
   activeArtifact: string | null;
   running: boolean;
   liveSessionId: string | null;
+  busy: boolean;
   onNew: () => void;
   onLive: () => void;
   onMap: () => void;
@@ -628,7 +638,7 @@ function Sidebar(props: {
                       <div className="sess-row" onClick={props.onLive}>
                         <span className="sess-main">
                           <span className="sess-id">● 进行中的会话</span>
-                          <span className="sess-meta"><span className="badge wip">running</span></span>
+                          <span className="sess-meta"><span className="badge wip">{props.busy ? "生成中" : "在线"}</span></span>
                         </span>
                       </div>
                     </div>
@@ -639,7 +649,8 @@ function Sidebar(props: {
                   {props.sessions.map((s) => {
                     const open = props.expanded === s.sessionId;
                     const isLive = props.running && s.sessionId === props.liveSessionId;
-                    const b = isLive ? { text: "running", cls: "wip" } : phaseBadge(s);
+                    // 三态：生成中(busy) → 「生成中」；开着但空闲 / 未开 → 真实进度徽章（完成/Pn）。live 圆点单独表示"连接在线可续聊"。
+                    const b = isLive && props.busy ? { text: "生成中", cls: "wip" } : phaseBadge(s);
                     const activeConv = props.activeConvId === s.sessionId || (isLive && props.activeConvId === "__live__");
                     const editing = props.renaming === s.sessionId;
                     return (
@@ -662,7 +673,7 @@ function Sidebar(props: {
                               />
                             ) : (
                               <>
-                                <span className="sess-id">{isLive && <span className="live-dot" />}{s.sessionId}</span>
+                                <span className="sess-id">{isLive && <span className="live-dot" title="会话在线，可继续对话（点停止关闭）" />}{s.sessionId}</span>
                                 <span className="sess-meta">
                                   <span className={"badge " + b.cls}>{b.text}</span>
                                   <span className="sess-count">{s.artifacts.length} 产物{s.hasTranscript ? " · 有对话" : ""}</span>
