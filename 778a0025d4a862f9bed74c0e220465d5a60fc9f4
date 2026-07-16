@@ -1,0 +1,36 @@
+feature-flow/commands/studio-stop.md
+  94ef0c809934aecd 1-35
+feature-flow/studio/web/src/App.tsx
+  94ef0c809934aecd 61-62,157-159,252,298,302,307,334,371,376,401,595,641,652-653,676
+feature-flow/commands/studio.md
+  94ef0c809934aecd 51
+feature-flow/studio/scripts/dev.mjs
+  94ef0c809934aecd 3,9-22,25-27,34-36,40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.1",
+  "base_commit_sha": "778a0025d4a862f9bed74c0e220465d5a60fc9f4",
+  "prompts": {
+    "94ef0c809934aecd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42c3b5a1-5eb1-44f0-92f9-382a68792cbe",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "liaolei2",
+      "messages": [],
+      "total_additions": 77,
+      "total_deletions": 2684,
+      "accepted_lines": 77,
+      "overriden_lines": 0,
+      "messages_url": "http://172.20.103.50:8002/cas/5386ba41bac37aeb10e2492ece8767b15fec0ff0f75dadd28fe408f84527f53c",
+      "token_usage": {
+        "input_tokens": 140320,
+        "output_tokens": 1296646,
+        "cache_creation_input_tokens": 10736407,
+        "cache_read_input_tokens": 663029300
+      }
+    }
+  }
+}
